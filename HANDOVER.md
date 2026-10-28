@@ -141,3 +141,67 @@ git log --all --format='%ae %ce'
 > 本文档**刻意不写出被清除的敏感串原文**——否则这份文档自己就成了新的泄露点。同理，脱敏脚本本身也放在仓库之外，不进入任何提交。
 
 > ⚠️ **给下一个接手的人**：`_config.yml` 的 `exclude` 只影响 **Jekyll 构建产物**，**不影响 GitHub 上文件是否可见**。凡是被 git 提交的 `TODO.md`、`HANDOVER.md` 这类内部文档，**推上去就是公开的**，`git log -p` 随时能翻出来。仓库从未推送过时是唯一一次能干净清除历史的机会，一旦推送再改就只是"掩盖"而非"删除"。
+
+## 八、日常维护：修改页面内容（2026-10-28 补充）
+
+内容改动**全部在这个仓库里做**（`D:\ssq_space\academic-site`）。改完提交推送，Actions 自动重建部署（实测约 1–2 分钟），**不需要任何手动发布步骤**。
+
+### 文件与 URL 对应
+
+| 页面 | 文件 | URL |
+|---|---|---|
+| 首页 | `_pages/home.md` | `/` |
+| About | `_pages/about.md` | `/about/` |
+| Research | `_pages/research.md` | `/research/` |
+| Publications 列表 | `_pages/publications.html` | `/publications/` |
+| Projects 列表 | `_pages/portfolio.html` | `/projects/` |
+| Experience | `_pages/experience.md` | `/experience/` |
+| CV | `_pages/cv.md` | `/cv/` |
+| Contact | `_pages/contact.md` | `/contact/` |
+| 湖仓迁移项目页 | `_portfolio/1-lakehouse-migration.md` | `/projects/lakehouse-migration/` |
+| Light-ChatBI 项目页 | `_portfolio/2-light-chatbi-data-agent.md` | `/projects/light-chatbi-data-agent/` |
+| 论文详情页 | `_publications/2024-01-01-dual-population-self-adaptive-epsilon.md` | `/publication/2024-saecmo/` |
+| 导航栏顺序 | `_data/navigation.yml` | 全站 |
+| 侧边栏姓名/简介/邮箱 | `_config.yml` → `author:` 段 | 全站 |
+
+> `_data/authors.yml` 是模板自带的占位文件（写着 "Name Name"），**没有被使用**，不要改它。
+
+### 标准流程
+
+```bash
+cd D:\ssq_space\academic-site
+# 1. 编辑内容文件
+# 2. 推送前扫描敏感串（有命中就停下来处理）
+grep -rn -E "<敏感模式>" --include="*.md" --include="*.yml" . | grep -v "^./_site/" | grep -v "^./vendor/"
+# 3. 提交并推送
+git add -A && git commit -m "Update ..." && git push
+# 4. 到 Actions 页确认 "Deploy Academic Pages template site to Pages" 变绿
+# 5. 核对线上页面
+```
+
+### 三个坑
+
+1. **本机没有本地预览。** Ruby 和 Docker 都不在了（见第三节），改完只能推送后到线上看。恢复办法见第九节第 3 项。
+2. **`_config.yml` 的 `exclude` 不保护 git。** 它只管 Jekyll 构建产物，管不了 GitHub 上文件可不可见——**凡是提交进仓库的文件都是公开的**（第七节有完整案例）。
+3. **在本地改，不要在 GitHub 网页上改。** 网页编辑会用账号的提交身份；账号若没开 "Keep my email address private"，真实邮箱就会进提交元数据。本地改 + 推送始终用 noreply 地址。
+
+### 内容改动仍适用的约束
+
+新增内容继续适用第二节的保守口径：**有疑问的数值不上网站**；公开前先确认口径来源（优先级链见第二节）。改项目页要重新确认是否触及未授权披露。
+
+## 九、尚待处理的事项（截至 2026-10-28）
+
+| # | 事项 | 状态 | 怎么解决 |
+|---|---|---|---|
+| 1 | **Pages Source 未手动切换** | ⚠️ 站点已上线且正常，但每次推送会多一条内置 `pages build and deployment` 的失败记录 | 仓库 **Settings → Pages → Build and deployment → Source** 选 **GitHub Actions**（本机无 `gh` CLI，只能网页手动点，约 1 分钟） |
+| 2 | **英文 CV PDF** | ❌ `files/cv.pdf` 未放置 | 准备通用版英文 CV 放入 `files/cv.pdf`。CV 页和首页的按钮检测到文件存在会**自动**变成下载链接，无需改代码。现存 `forphd/Academic_CV_TU_Delft_Game_Theory.pdf` 是 TU Delft 定制版且含红色占位符，不可用 |
+| 3 | **本地构建环境** | ⚠️ 本机无 Ruby、无 Docker | 装 Ruby 3.3 后 `bundle install` 可离线完成（`vendor/bundle/ruby/3.3.0/gems/` 里 61 个 gem 齐全），即可恢复 `bundle exec jekyll serve` |
+| 4 | **辅助脚本已丢失** | ⚠️ `D:\INTERN\markdownProject\_tools\` 整个目录随项目迁移消失 | 需要时重写（构建 / 冒烟测试 / 链接检查脚本；线上链接检查的逻辑本轮已验证可行） |
+| 5 | **本地残留旧对象** | ⚠️ 含敏感串的 4 个旧提交只存在于本地 `.git` 的 reflog，**不在任何分支上，不会被推送**，远端已逐提交验证干净 | 想彻底删除：`git reflog expire --expire=now --expire-unreachable=now --all && git gc --prune=now`（不可逆操作，需自行判断是否执行） |
+| 6 | **可选的内容补充** | 📌 见 `TODO.md` 第七节 | 销量预测第三个项目页、字段级血缘与数据质量指标、VU Amsterdam 合作课程、英语成绩；均需先确认口径再写 |
+
+### 建议的处理顺序
+
+1. 手动切 Pages Source（1 分钟，消除每次推送的红色记录）
+2. 补 `files/cv.pdf`
+3. 装 Ruby 恢复本地预览——论文与项目页的措辞往往要反复斟酌，来回推送不划算
