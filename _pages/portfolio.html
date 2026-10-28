@@ -1,0 +1,16 @@
+---
+layout: archive
+title: "Projects"
+permalink: /projects/
+author_profile: true
+redirect_from:
+  - /portfolio/
+---
+
+{% include base_path %}
+
+<p>Selected engineering projects from my industry work. Each page covers the problem, architecture, technical decisions, my contributions, and results with their limitations. Internal code, data and configuration are not published.</p>
+
+{% for post in site.portfolio %}
+  {% include archive-single.html %}
+{% endfor %}

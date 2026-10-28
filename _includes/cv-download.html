@@ -1,0 +1,6 @@
+{% assign cv_pdf = site.static_files | where: "path", "/files/cv.pdf" | first %}
+{% if cv_pdf %}
+<a href="{{ '/files/cv.pdf' | relative_url }}" class="btn btn--primary"><i class="fas fa-file-pdf" aria-hidden="true"></i> Download CV (PDF)</a>
+{% else %}
+<span class="btn btn--inverse btn--disabled" aria-disabled="true">PDF CV: available on request</span>
+{% endif %}
