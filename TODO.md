@@ -9,12 +9,12 @@
 | # | 事项 | 现状 | 改哪里 |
 |---|---|---|---|
 | 1 | **GitHub 用户名** | ✅ 已填 `pluto201`（`url`、`repository`、`author.github` 三处），仓库名 `pluto201.github.io`，`baseurl` 保持 `""` | — |
-| 2 | **公开邮箱** | 已决定**暂不公开**，保持空，Contact 页显示 "to be added"。材料里有 `Pluto201@users.noreply.github.com`，但该邮箱现在用作 git 提交身份 | `_config.yml` → `author.email` |
-| 3 | **项目公开授权** | 两个项目页已去掉内部代码、配置、IP、截图、业务系统名称，但仍描述了公司内部系统的架构和指标。请确认公司允许公开 | `_portfolio/*.md` |
-| 4 | **雇主名称** | 网站写的是 "state-owned enterprise, Beijing"，没有写公司名。材料中为"[雇主名未公开]"，英文名 "[employer name withheld]" 未确认。需要决定：①是否公开公司名；②英文正式名称；③"国有企业"的说法是否准确 | `_pages/home.md`、`about.md`、`experience.md`、`cv.md`；`_config.yml` → `author.employer` |
+| 2 | **公开邮箱** | ✅ 已决定**不公开**，保持空，Contact 页显示 "to be added"。仓库内的提交身份已改用 GitHub noreply 地址，原邮箱不出现在任何提交元数据或文件中 | `_config.yml` → `author.email` |
+| 3 | **项目公开授权** | ✅ 已确认**允许公开**（2026-10-28）。两个项目页已去掉内部代码、配置、IP、截图、业务系统名称 | `_portfolio/*.md` |
+| 4 | **雇主名称** | ✅ 已决定**暂不公开**（2026-10-28）。网站一律写 "state-owned enterprise, Beijing"。具体公司名**不记录在本文件内**，以免随仓库一并公开 | `_pages/home.md`、`about.md`、`experience.md`、`cv.md`；`_config.yml` → `author.employer` |
 | 5 | **英文 PDF 简历** | 未放置。CV 页和首页的按钮会在 `files/cv.pdf` 存在时**自动**变成下载链接 | 放入 `files/cv.pdf` |
 
-> 上线前必须处理的现在是第 3、4、5 项。第 1 项（GitHub 用户名）已于 2026-10-27 定为 `pluto201` 并填入 `_config.yml`。
+> 上线前必须处理的现在只剩第 5 项（英文 CV PDF）。第 1 项已于 2026-10-27 定为 `pluto201`；第 2、3、4 项已于 2026-10-28 确认。
 
 关于第 5 项：`forphd/Academic_CV_TU_Delft_Game_Theory.pdf` 是针对 TU Delft 博弈论职位定制的，并且里面还有红色待确认占位符，所以**没有使用**。建议准备一份通用版英文 CV 后再放入。
 

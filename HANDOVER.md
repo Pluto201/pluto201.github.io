@@ -1,7 +1,7 @@
 # 交接文档：学术个人网站（Academic Pages）
 
 > 更新时间：2026-10-28
-> 项目目录：`D:\INTERN\markdownProject\lapis\academic-site\`
+> 项目目录：`D:\ssq_space\academic-site\`
 > 需求原文：`lapis-cv-vscode-v2.0.0/forphd/pages/prompt.md`
 > 下一位执行者（你本人，或可以访问 GitHub 的 agent）只需要按本文第四节操作。
 
@@ -15,7 +15,7 @@
 | 文档 | ✅ `README.md`（使用说明）、`TODO.md`（待确认事实）、本文件 |
 | 本地构建 | ✅ **已成功**，见第三节 |
 | Git 仓库 | ✅ 已 `git init`，分支 `main`，首次提交 `104f030`（260 个文件） |
-| GitHub 仓库与发布 | ❌ 未创建、未推送。**网站目前没有上线** |
+| GitHub 仓库与发布 | 🟡 仓库已创建（`Pluto201/pluto201.github.io`，public，2026-10-28 09:00 UTC），**但尚未推送任何提交**。**网站目前没有上线** |
 
 ## 二、内容来源与真实性处理
 
@@ -34,7 +34,9 @@
 
 > 这一节记录在本机实际执行过的命令和结果。
 
-本机环境：Windows 11 22631、Node v20.19.5、Python 3.13.7。原本没有安装 Ruby。为了验证构建，在 `D:\INTERN\markdownProject\_tools\Ruby33` 安装了 Ruby 3.3.6（RubyInstaller，带 Devkit）。安装时**没有修改系统 PATH**，也没有关联文件类型。不需要时可以运行该目录下的 `unins000.exe` 卸载。
+本机环境（2026-10-27 验证时）：Windows 11、Node、Python 3.13.7。Ruby 3.3.6（RubyInstaller，带 Devkit）当时装在 `D:\INTERN\markdownProject\_tools\Ruby33`，**未修改系统 PATH**。
+
+> ⚠️ **2026-10-28 更新**：项目已迁移到 `D:\ssq_space\academic-site\`，上述 `D:\INTERN\markdownProject\` 目录**已不存在**（其中的 Ruby 3.3.6 与全部辅助脚本一并丢失）。本机当前**没有 Ruby，也没有 Docker**，所以**本地构建路径当前不可用**，构建只能依赖 GitHub Actions。`vendor/bundle/ruby/3.3.0/gems/` 里 61 个 gem 仍然保留，重装 Ruby 3.3 即可离线恢复构建。Node 也已从 v20.19.5 变为 v22.22.3（nvm4w，`C:\nvm4w\nodejs` 是指向 `D:\program\nvm\nvm\v22.22.3` 的符号链接）。
 
 - `bundle install`：**已成功**（2026-10-27 晚）。rubygems.org 仍然很慢（15 秒才拿到响应头），但阿里云镜像可用。本地配置写在该仓库的 `.bundle/config`（已被 gitignore，不会提交）：
   ```yaml
@@ -59,28 +61,28 @@
 1. **论文页链接 404**（三处）：`permalink` 写成了 `/publication/2024-saecmo`（无尾斜杠），Jekyll 生成的是 `publication/2024-saecmo.html` 文件，而页面里链接指向 `/publication/2024-saecmo`，访问会 404。已把 permalink 和三处链接统一成目录式 `/publication/2024-saecmo/`。**注意：其余页面全部是目录式，只有论文页原来不是。**
 2. **`temp.md` 会被发布**：根目录下的 `temp.md`（内部工作笔记，内容为"Dify 工作流 / DolphinScheduler 调度脚本"等）不在 `exclude` 里，被 Jekyll 当静态文件原样复制到 `_site/temp.md`，上线后 `https://pluto201.github.io/temp.md` 可直接下载。已在 `_config.yml` 的 `exclude` 加入 `temp.md`，并加进 `.gitignore`（文件保留在本地，只是不发布、不提交）。
 
-**下一步（如需本地再看一次页面）**：
+**下一步（如需本地再看一次页面）**：需先重装 Ruby 3.3，然后：
 
 ```powershell
-cd academic-site
-$env:PATH = "D:\INTERN\markdownProject\_tools\Ruby33\bin;$env:PATH"
+cd D:\ssq_space\academic-site
 bundle exec jekyll serve -l -H localhost
 ```
+
+`vendor/bundle` 中的 gem 齐全，`bundle install` 可离线完成。辅助脚本见第六节（已丢失，需重写）。
 
 ## 四、发布步骤（需要能访问 GitHub）
 
 > **已选定方式 C**：不在本地构建，直接推送到 GitHub，由 Actions 完成第一次构建。
-> 虽然本地现在已经能成功构建，但 Actions 跑的是 Linux + Ruby 3.1，依赖解析结果可能不同，**第一次 Actions 运行仍然要当第一次真实构建对待**。如果 build job 失败，请先看 "Build with Jekyll" 步骤的日志：Liquid 或 YAML 报错会给出文件名和行号，修改后重新推送即可。常见原因见 `README.md` 第 9 节。
+> 虽然本地现在已经能成功构建，但 Actions 跑的是 Linux + Ruby 3.3（见 commit `c1dec8a`），且 `Gemfile.lock` 被 gitignore，**每次运行都会重新解析依赖**，因此**第一次 Actions 运行仍然要当第一次真实构建对待**。如果 build job 失败，请先看 "Build with Jekyll" 步骤的日志：Liquid 或 YAML 报错会给出文件名和行号，修改后重新推送即可。常见原因见 `README.md` 第 9 节。
 
 1. **先处理 `TODO.md` 第一节**：邮箱、项目公开授权、雇主名称、CV PDF（GitHub 用户名已于 2026-10-27 定为 `pluto201` 并填入 `_config.yml`）。
 2. ~~修改 `_config.yml`，把 `GITHUB_USERNAME` 替换为实际用户名~~ ✅ 已完成：`url`、`repository`、`author.github` 三处都是 `pluto201`，`baseurl` 保持 `""`。
-3. 在 GitHub 新建**公开**仓库 `pluto201.github.io`，不要初始化任何文件。
-4. 在 `academic-site/` 目录执行（`git init` 和首次提交已完成）：
+3. ~~在 GitHub 新建**公开**仓库 `pluto201.github.io`~~ ✅ 已完成：`Pluto201/pluto201.github.io`，public，创建于 2026-10-28 09:00 UTC，**内容为空**（尚未推送任何提交）。
+4. 在 `academic-site/` 目录执行（`git init`、首次提交、`git remote add origin` 均已完成）：
    ```bash
-   git remote add origin https://github.com/pluto201/pluto201.github.io.git
    git push -u origin main
    ```
-   提交用的身份是仓库级的 `pluto201 <Pluto201@users.noreply.github.com>`（全局的 `songshiquan <[redacted]>` 未改动）。
+   提交身份是仓库级的 `pluto201 <Pluto201@users.noreply.github.com>`（GitHub noreply 地址，不暴露真实邮箱）。
 5. 仓库 **Settings → Pages → Source** 选择 **GitHub Actions**。
 6. 在 **Actions** 页面确认工作流 "Deploy Academic Pages template site to Pages" 的 build 和 deploy 两个 job 都成功。第一次推送如果发生在第 5 步之前，需要点 **Re-run all jobs**。
 7. 按 `README.md` 第 7.3 节逐项检查线上页面。
@@ -89,8 +91,8 @@ bundle exec jekyll serve -l -H localhost
 
 ## 五、已知问题和注意事项
 
-- **工作流里的 action 版本**沿用模板当前写法（`actions/checkout@v7.0.1`、`ruby/setup-ruby@v1.328.0`、`actions/configure-pages@v6.0.0`、`actions/upload-pages-artifact@v5.0.0`、`actions/deploy-pages@v5`、Ruby 3.1）。本地无法验证 Actions，首次运行时请留意 Actions 日志。
-- **本地构建用 Ruby 3.3.6，Actions 用 Ruby 3.1**，依赖解析结果可能不同；`Gemfile.lock` 已被 gitignore，不要提交。
+- **工作流里的 action 版本**沿用模板当前写法（`actions/checkout@v7.0.1`、`ruby/setup-ruby@v1.328.0`、`actions/configure-pages@v6.0.0`、`actions/upload-pages-artifact@v5.0.0`、`actions/deploy-pages@v5`、**Ruby 3.3**）。本地无法验证 Actions，首次运行时请留意 Actions 日志。
+- **本地构建用 Ruby 3.3.6，Actions 用 Ruby 3.3**；且 `Gemfile.lock` 已被 gitignore，Actions 每次运行都重新解析依赖，结果可能与本地不同。
 - **Mermaid 图**依赖 jsDelivr CDN（模板默认行为），在本机离线预览时可能不显示，线上正常。字体图标同理。
 - **社交分享图 `images/og-image.png`** 和 **favicon** 仍是模板默认图片。
 - 模板自带的 `markdown_generator/`、`scripts/`、`Dockerfile` 保留了，但不会发布（已在 `exclude` 中）。
@@ -99,7 +101,7 @@ bundle exec jekyll serve -l -H localhost
 
 ## 六、本轮新增的辅助脚本
 
-都在 `D:\INTERN\markdownProject\_tools\` 下，**不属于网站仓库**，不会提交：
+曾放在 `D:\INTERN\markdownProject\_tools\` 下，**不属于网站仓库**，不会提交。⚠️ **2026-10-28：该目录已随项目迁移而丢失**，下列脚本需要时须重写：
 
 | 文件 | 作用 |
 |---|---|
@@ -109,3 +111,29 @@ bundle exec jekyll serve -l -H localhost
 | `check_links.py` | 扫描构建产物的 href/src，检查内部链接是否 404 |
 
 `check_links.py` 用 `python -I <脚本> <site目录>` 调用（`-I` 隔离模式，避免当前目录的同名模块被误加载）。
+
+## 七、推送前的隐私处理（2026-10-28）
+
+按本人决定：**项目描述允许公开**，**雇主名称与邮箱不公开**。
+
+推送到公开仓库前对全仓库做了一次敏感串扫描，发现并清除：
+
+| 位置 | 原内容 | 处理 |
+|---|---|---|
+| `TODO.md` | 雇主中文名与英文正式名 | 从文档中移除，只保留"暂不公开"这个决定本身 |
+| `HANDOVER.md` | 雇主邮箱域名 | 替换为 `[redacted]` |
+| `TODO.md` / `HANDOVER.md` | 个人邮箱 | 替换为 GitHub noreply 地址 |
+| 全部提交的作者与提交者元数据 | 个人邮箱 | 重写为 `Pluto201@users.noreply.github.com` |
+
+因为仓库**从未推送过**（远端 0 个 ref，历史尚未公开），用 `git filter-branch --tree-filter` + `--env-filter` 重写了全部提交，上述字符串在**任何 commit 中都不再存在**。核对方法：
+
+```bash
+# 逐个提交扫描（敏感模式本身已刻意不在此文档中出现，故用占位符）
+git rev-list --all | while read c; do git grep -l -E "<敏感模式>" $c; done
+# 查看所有提交者邮箱
+git log --all --format='%ae %ce'
+```
+
+> 本文档**刻意不写出被清除的敏感串原文**——否则这份文档自己就成了新的泄露点。同理，脱敏脚本本身也放在仓库之外，不进入任何提交。
+
+> ⚠️ **给下一个接手的人**：`_config.yml` 的 `exclude` 只影响 **Jekyll 构建产物**，**不影响 GitHub 上文件是否可见**。凡是被 git 提交的 `TODO.md`、`HANDOVER.md` 这类内部文档，**推上去就是公开的**，`git log -p` 随时能翻出来。仓库从未推送过时是唯一一次能干净清除历史的机会，一旦推送再改就只是"掩盖"而非"删除"。
