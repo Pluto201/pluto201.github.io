@@ -13,9 +13,10 @@
 | 页面内容（英文） | ✅ Home、About、Research、Publications（1 篇）、Projects（2 个）、Experience、CV、Contact |
 | 配置 | ✅ `_config.yml`（用户名已填 `pluto201`）、导航、GitHub Actions 工作流 |
 | 文档 | ✅ `README.md`（使用说明）、`TODO.md`（待确认事实）、本文件 |
-| 本地构建 | ✅ **已成功**，见第三节 |
-| Git 仓库 | ✅ 已 `git init`，分支 `main`，4 个提交（首次提交 + 3 次后续），历史已重写脱敏，见第七节 |
-| GitHub 仓库与发布 | 🟡 仓库已创建（`Pluto201/pluto201.github.io`，public，2026-10-28 09:00 UTC），**但尚未推送任何提交**。**网站目前没有上线** |
+| 本地构建 | ✅ **已成功**，见第三节（注：本机现已无 Ruby，见第三节的 2026-10-28 更新） |
+| Git 仓库 | ✅ 已 `git init`，分支 `main`，5 个提交，历史已重写脱敏，见第七节 |
+| GitHub 仓库与发布 | ✅ **已上线**：`Pluto201/pluto201.github.io`（public），Actions 构建成功，**https://pluto201.github.io 可访问**（2026-10-28） |
+| 线上验证 | ✅ 15 个 URL 全部 200；sitemap 17 条；内部链接 11 条无断链；无本地路径泄漏 |
 
 ## 二、内容来源与真实性处理
 
@@ -70,24 +71,26 @@ bundle exec jekyll serve -l -H localhost
 
 `vendor/bundle` 中的 gem 齐全，`bundle install` 可离线完成。辅助脚本见第六节（已丢失，需重写）。
 
-## 四、发布步骤（需要能访问 GitHub）
+## 四、发布流程（✅ 已于 2026-10-28 完成）
 
-> **已选定方式 C**：不在本地构建，直接推送到 GitHub，由 Actions 完成第一次构建。
-> 虽然本地现在已经能成功构建，但 Actions 跑的是 Linux + Ruby 3.3（见 commit `c1dec8a`），且 `Gemfile.lock` 被 gitignore，**每次运行都会重新解析依赖**，因此**第一次 Actions 运行仍然要当第一次真实构建对待**。如果 build job 失败，请先看 "Build with Jekyll" 步骤的日志：Liquid 或 YAML 报错会给出文件名和行号，修改后重新推送即可。常见原因见 `README.md` 第 9 节。
+> **方式 C**：不在本地构建，直接推送到 GitHub，由 Actions 完成构建。
+> Actions 跑的是 Linux + Ruby 3.3（见 `5c6ae60`），且 `Gemfile.lock` 被 gitignore，**每次运行都会重新解析依赖**，依赖解析结果可能与本地不同。**第一次运行仍应按真实构建对待**；如果 build job 失败，看 "Build with Jekyll" 步骤的日志：Liquid 或 YAML 报错会给出文件名和行号，改完重新推送即可。常见原因见 `README.md` 第 9 节。
 
-1. **先处理 `TODO.md` 第一节**：邮箱、项目公开授权、雇主名称、CV PDF（GitHub 用户名已于 2026-10-27 定为 `pluto201` 并填入 `_config.yml`）。
-2. ~~修改 `_config.yml`，把 `GITHUB_USERNAME` 替换为实际用户名~~ ✅ 已完成：`url`、`repository`、`author.github` 三处都是 `pluto201`，`baseurl` 保持 `""`。
-3. ~~在 GitHub 新建**公开**仓库 `pluto201.github.io`~~ ✅ 已完成：`Pluto201/pluto201.github.io`，public，创建于 2026-10-28 09:00 UTC，**内容为空**（尚未推送任何提交）。
-4. 在 `academic-site/` 目录执行（`git init`、首次提交、`git remote add origin` 均已完成）：
-   ```bash
-   git push -u origin main
-   ```
-   提交身份是仓库级的 `pluto201 <Pluto201@users.noreply.github.com>`（GitHub noreply 地址，不暴露真实邮箱）。
-5. 仓库 **Settings → Pages → Source** 选择 **GitHub Actions**。
-6. 在 **Actions** 页面确认工作流 "Deploy Academic Pages template site to Pages" 的 build 和 deploy 两个 job 都成功。第一次推送如果发生在第 5 步之前，需要点 **Re-run all jobs**。
-7. 按 `README.md` 第 7.3 节逐项检查线上页面。
+实际执行记录：
 
-如果使用的不是 `pluto201.github.io` 这个仓库名，要把 `baseurl` 改成 `"/<repo>"`（见 README 第 7.2 节）。
+| # | 步骤 | 结果 |
+|---|---|---|
+| 1 | 处理 `TODO.md` 第一节 | ✅ 邮箱不公开、项目允许公开、雇主暂不公开（2026-10-28 确认）；CV PDF 仍待补 |
+| 2 | `_config.yml` 填用户名 | ✅ `url`、`repository`、`author.github` 三处；`baseurl` 保持 `""` |
+| 3 | 建公开仓库 | ✅ `Pluto201/pluto201.github.io`，public |
+| 4 | 推送 | ✅ `git push -u origin main`（5 个提交，历史已脱敏） |
+| 5 | Actions 构建 | ✅ "Deploy Academic Pages template site to Pages" 两个 job 全绿（run #40703601743） |
+| 6 | 线上验证 | ✅ 15 个 URL 全 200；sitemap 17 条；内部链接无断链；无本地路径泄漏 |
+
+> ⚠️ **还有一件手动事没做**：仓库 **Settings → Pages → Build and deployment → Source** 需要选择 **GitHub Actions**。
+> 原因：`<user>.github.io` 仓库在首次推送时会被 GitHub 自动启用"从分支构建"，于是同时触发内置的 `pages build and deployment` 工作流——它用旧版 Jekyll 构建器、不加载本项目依赖，**该 run 必然失败**（`Build with Jekyll` 步骤红）。它不会覆盖线上站点（失败后 `Upload artifact` 与 `deploy` 均 skipped），但每次推送都会多一条失败记录、干扰排查。切到 GitHub Actions 后即停止。
+>
+> 如果将来要换仓库名（不是 `pluto201.github.io`），要把 `baseurl` 改成 `"/<repo>"`（见 README 第 7.2 节）。
 
 ## 五、已知问题和注意事项
 
@@ -97,7 +100,8 @@ bundle exec jekyll serve -l -H localhost
 - **社交分享图 `images/og-image.png`** 和 **favicon** 仍是模板默认图片。
 - 模板自带的 `markdown_generator/`、`scripts/`、`Dockerfile` 保留了，但不会发布（已在 `exclude` 中）。
 - `_pages/year-archive.html`、`category-archive.html`、`tag-archive.html` 是博客归档页，保留以便以后写博客，目前不在导航中。
-- **`gh` CLI 本机没有安装**，所以建仓库、改 Pages 设置这两步目前只能手动在网页上操作，或者临时安装 `gh` / 提供 PAT。
+- **`gh` CLI 本机没有安装**，所以改 Pages 设置这一步只能手动在网页上操作，或者临时安装 `gh` / 提供 PAT。
+- **GitHub 内置的 `pages build and deployment` 工作流会失败**：`<user>.github.io` 仓库首次推送会被自动启用"从分支构建"，该工作流用旧 Jekyll 构建器、跑不了本项目依赖，必然红。它不影响线上站点（`Upload artifact` 与 `deploy` 均 skipped），但请到 **Settings → Pages → Source 选 GitHub Actions** 关掉它，否则每次推送都会多一条失败记录。
 
 ## 六、本轮新增的辅助脚本
 
