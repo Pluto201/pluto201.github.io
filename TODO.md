@@ -14,6 +14,8 @@
 | 4 | **雇主名称** | 网站写的是 "state-owned enterprise, Beijing"，没有写公司名。材料中为"[雇主名未公开]"，英文名 "[employer name withheld]" 未确认。需要决定：①是否公开公司名；②英文正式名称；③"国有企业"的说法是否准确 | `_pages/home.md`、`about.md`、`experience.md`、`cv.md`；`_config.yml` → `author.employer` |
 | 5 | **英文 PDF 简历** | 未放置。CV 页和首页的按钮会在 `files/cv.pdf` 存在时**自动**变成下载链接 | 放入 `files/cv.pdf` |
 
+> 上线前必须处理的现在是第 3、4、5 项。第 1 项（GitHub 用户名）已于 2026-10-27 定为 `pluto201` 并填入 `_config.yml`。
+
 关于第 5 项：`forphd/Academic_CV_TU_Delft_Game_Theory.pdf` 是针对 TU Delft 博弈论职位定制的，并且里面还有红色待确认占位符，所以**没有使用**。建议准备一份通用版英文 CV 后再放入。
 
 ## 二、个人信息（可选，有就填）
